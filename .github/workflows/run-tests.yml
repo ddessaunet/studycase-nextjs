@@ -1,0 +1,21 @@
+# Workflow name
+name: 'Run all tests'
+
+# Event for the workflow
+on: push
+
+# List of jobs
+jobs:
+  test:
+    # Operating System
+    runs-on: ubuntu-latest
+    # Job steps
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v1
+      - name: Install dependencies
+        run: yarn
+      - name: Check for linter errors
+        run: yarn lint
+      - name: Run tests
+        run: yarn test
