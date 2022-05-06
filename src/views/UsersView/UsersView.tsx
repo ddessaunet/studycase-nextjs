@@ -1,76 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Container, Flex, Text } from '@chakra-ui/react';
-import { useAxios } from 'utils/useAxios';
-import { getUsers } from 'services/UserService';
+import React, { useState } from 'react';
+import { Button, Container, Flex } from '@chakra-ui/react';
+import { getUsersPayload } from 'services/UserService';
 import { User } from 'components/User';
+import { Paginated } from 'components/Paginated';
 import { useNavigate } from 'react-router-dom';
-
-let page = 0;
+import { User as IUser } from 'services/UserService.d';
 
 export const UsersView = () => {
   const navigate = useNavigate();
-  const { response, loading }: any = useAxios(getUsers(5, page));
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<IUser[]>([]);
 
-  useEffect(() => {
-    if (response) {
-      const { data: users } = response;
-      setUsers(users);
-    }
-  }, [response]);
-
-  const navigateProfile = (userid: string) => {
-    navigate(`/${userid}`);
+  const nav = (path: string) => {
+    window.scrollTo(0, 0);
+    navigate(path);
   };
 
-  const navigateUserPosts = () => {};
-
-  const UsersList = ({ users }: any) => {
-    if (loading || !users.length) {
-      return (
-        <Flex justifyContent="center" m="20px">
-          <Text>Loading...</Text>
+  const UsersList = ({ users }: any) => (
+    <Flex flexDirection="column">
+      {users.map((user: any) => (
+        <Flex key={user.id} m="10px">
+          <User {...user}>
+            <Flex gap="1">
+              <Button onClick={() => nav(`/${user.id}`)}>
+                Show full profile
+              </Button>
+              <Button onClick={() => nav(`/${user.id}/posts`)}>
+                User posts
+              </Button>
+            </Flex>
+          </User>
         </Flex>
-      );
-    }
-
-    return (
-      <Flex flexDirection="column">
-        {users.map((user: any) => (
-          <Flex key={user.id} m="10px">
-            <User {...user}>
-              <Flex gap="1">
-                <Button onClick={() => navigateProfile(user.id)}>
-                  Show full profile
-                </Button>
-                <Button onClick={navigateUserPosts}>User posts</Button>
-              </Flex>
-            </User>
-          </Flex>
-        ))}
-      </Flex>
-    );
-  };
-
-  const handleBack = () => {
-    page = page - 1;
-    setUsers([]);
-  };
-
-  const handleNext = () => {
-    page = page + 1;
-    setUsers([]);
-  };
+      ))}
+    </Flex>
+  );
 
   return (
     <Container width="100%">
-      <UsersList users={users} />
-      <Flex justifyContent="center">
-        <Button onClick={handleBack} disabled={page === 0}>
-          Back
-        </Button>
-        <Button onClick={handleNext}>Next</Button>
-      </Flex>
+      <Paginated
+        elements={users}
+        setElements={setUsers}
+        request={(page: number) => getUsersPayload(5, page)}
+      >
+        <UsersList users={users} />
+      </Paginated>
     </Container>
   );
 };
