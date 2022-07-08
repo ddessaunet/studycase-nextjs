@@ -58,3 +58,5 @@ export const TagsView: NextPage = () => {
     </Container>
   );
 };
+
+export default TagsView;

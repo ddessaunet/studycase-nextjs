@@ -42,3 +42,5 @@ export const PostsView = () => {
     </Container>
   );
 };
+
+export default PostsView;

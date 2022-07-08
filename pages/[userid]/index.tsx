@@ -57,3 +57,5 @@ export const UserDetailsView = () => {
     </Container>
   );
 };
+
+export default UserDetailsView;
