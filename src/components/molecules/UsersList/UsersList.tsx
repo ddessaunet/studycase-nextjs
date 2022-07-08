@@ -1,15 +1,15 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button, Flex } from '@chakra-ui/react';
 import { User } from 'components/atoms/User';
 import { getPostsByUserPayload } from 'services/UserService';
 import { UsersListProps } from 'components/molecules/UsersList';
+import { useRouter } from 'next/router';
 
 export const UsersList = ({ users }: UsersListProps) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const nav = (path: string) => {
     window.scrollTo(0, 0);
-    navigate(path);
+    router.push(path);
   };
   return (
     <Flex flexDirection="column">
